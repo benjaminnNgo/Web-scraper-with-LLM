@@ -1,0 +1,49 @@
+[project]
+name = "llm-challenge"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi[standard]>=0.116.2",
+    "langchain>=0.3.27",
+    "langchain-huggingface>=0.3.1",
+    "pre-commit>=4.3.0",
+    "ruff>=0.13.1",
+    "torch>=2.8.0",
+    "transformers>=4.56.2",
+    "uvicorn>=0.36.0",
+]
+
+[tool.ruff]
+src = ["tgm"]
+line-length = 88
+indent-width = 4
+target-version = "py39"
+
+[tool.ruff.lint]
+select = [
+    "D",  # pydocstyle
+]
+ignore = [
+    "D100",  # Ignore "Missing docstring in public module"
+    "D101",  # Ignore "Missing docstring in public class"
+    "D102",  # Ignore "Missing docstring in public method"
+    "D103",  # Ignore "Missing docstring in public function"
+    "D104",  # Ignore "Missing docstring in public package"
+    "D105",  # Ignore "Missing docstring in magic method"
+    "D107",  # Ignore "Missing docstring in __init__"
+    "D205",  # Ignore "blank line required between summary line and description"
+]
+
+[tool.ruff.format]
+quote-style = "single"
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=8.4.2",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
