@@ -1,14 +1,20 @@
+import requests
 from abc import abstractmethod
 from typing import Dict, Optional, Protocol
 
-import requests
-
-from app.constant import DESCRIPTION, ERROR, ERROR_MESSAGE_DETAIL
+from app.constant import (
+    DESCRIPTION,
+    ERROR,
+    ERROR_MESSAGE_DETAIL,
+    LLM_MODEL_NAME,
+    OLLAMA_HOST,
+)
 from app.services.html_process_hooks import (
     ExtractHTMLBodyHook,
     ExtractTextFromHTMLHook,
     HTMLProcessingHookManager,
 )
+from app.llm_models import OllamaWrapper
 
 
 class ScaperBase(Protocol):
@@ -41,18 +47,41 @@ class CarDescriptionScraper(ScaperBase):
     def __init__(self, url: str) -> None:
         if url is None:
             raise ValueError("URL provided can't be None")
+
         self.url = url
+        self.llm_model = OllamaWrapper(
+            model=LLM_MODEL_NAME, base_url=f'http://ollama:{OLLAMA_HOST}'
+        )
 
     def get_url(self) -> str:
         return self.url
 
+    def _get_template(self) -> str:
+        template = (
+            'You are tasked with extracting specific information from the following text content: {content}. '
+            'Please follow these instructions carefully: \n\n'
+            '1. **Extract Information:** Only extract the information that directly matches the provided description:{parse_description}'
+            '2. **No Extra Content:** Do not include any additional text, comments, or explanations in your response. '
+            "3. **Empty Response:** If no information matches the description, return an empty string ('')."
+            '4. **Direct Data Only:** Your output should contain only the data that is explicitly requested, with no other text.'
+        )
+        return template
+
+    def _get_task(self) -> str:
+        return 'Parse description of the car. Then write a paragraph of parsed description.'
+
     def scrap(self, content: str) -> Dict:
+        """Scap information about the car."""
+        # HTML pre-process
         html_processing_hm = HTMLProcessingHookManager()
         html_processing_hm.register(ExtractHTMLBodyHook())
         html_processing_hm.register(ExtractTextFromHTMLHook())
-
         content = html_processing_hm.execute(content)
-        return {DESCRIPTION: content}
+
+        task = self._get_task()
+        template = self._get_template()
+        output = self.llm_model.prompt(content, template, parse_description=task)
+        return {DESCRIPTION: output}
 
 
 class ScraperBuilder:

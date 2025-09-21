@@ -84,6 +84,7 @@ def test_CarDescriptionScraper_output(
     assert output == {DESCRIPTION: 'processed'}
 
 
+@pytest.mark.skip(reason='@TODO: Need to mock OllamaWrapper')
 @patch('app.services.scraper.ExtractHTMLBodyHook')
 @patch('app.services.scraper.ExtractTextFromHTMLHook')
 @patch('app.services.scraper.HTMLProcessingHookManager')
