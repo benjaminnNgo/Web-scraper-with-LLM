@@ -39,10 +39,11 @@ def html_process_hm_factory():
     mock_hm.execute.return_value = 'processed'
     return mock_hm
 
+
 @pytest.fixture
 def llm_wrapper_factory():
     mock_llm_wrapper = MagicMock()
-    mock_llm_wrapper.prompt.return_value = "foo"
+    mock_llm_wrapper.prompt.return_value = 'foo'
     return mock_llm_wrapper
 
 
@@ -65,6 +66,7 @@ def test_CarDescriptionScraper_url(
     scraper = CarDescriptionScraper(expected_url)
 
     assert scraper.get_url() == expected_url
+
 
 @patch('app.services.scraper.OllamaWrapper')
 @patch('app.services.scraper.ExtractHTMLBodyHook')
@@ -100,7 +102,9 @@ def test_CarDescriptionScraper_output(
     html_process_hm_factory.register.assert_any_call(html_hook_factory)
     html_process_hm_factory.execute.assert_called_once_with('raw html')
     MockOllamaWrapper.assert_called_once()
-    llm_wrapper_factory.prompt.assert_called_once_with('processed',scraper._get_template(),parse_description = scraper._get_task())
+    llm_wrapper_factory.prompt.assert_called_once_with(
+        'processed', scraper._get_template(), parse_description=scraper._get_task()
+    )
 
 
 def test_bad_CarDescriptionScraper():
