@@ -1,14 +1,14 @@
 from typing import Dict
+from unittest.mock import MagicMock, patch
 
 import pytest
 
 from app.constant import DESCRIPTION, ERROR, ERROR_MESSAGE_DETAIL
-from app.services.scraper import (CarDescriptionScraper, ScaperBase,
-                                  ScraperBuilder)
+from app.services.scraper import CarDescriptionScraper, ScaperBase, ScraperBuilder
 
 
 class DummyScraper(ScaperBase):
-    """Scraper to retrieve information about the car given URL to the website.
+    """Dummy scraper for testing.
 
     Args:
         url (str): URL to website of a car
@@ -27,14 +27,91 @@ class DummyScraper(ScaperBase):
         return {DESCRIPTION: content}
 
 
-def test_CarDescriptionScraper():
+@pytest.fixture
+def html_hook_factory():
+    mock_hook = MagicMock()
+    return mock_hook
+
+
+@pytest.fixture
+def html_process_hm_factory():
+    mock_hm = MagicMock()
+    mock_hm.execute.return_value = 'processed'
+    return mock_hm
+
+
+@patch('app.services.scraper.ExtractHTMLBodyHook')
+@patch('app.services.scraper.ExtractTextFromHTMLHook')
+@patch('app.services.scraper.HTMLProcessingHookManager')
+def test_CarDescriptionScraper_url(
+    MockHTMLProcessingHookManager,
+    MockExtractTextHook,
+    MockExtractBodyHook,
+    html_process_hm_factory,
+    html_hook_factory,
+):
+    # Setup mocks
+    MockHTMLProcessingHookManager.return_value = html_process_hm_factory
+    MockExtractTextHook.return_value = html_hook_factory
+    MockExtractBodyHook.return_value = html_hook_factory
+
     expected_url = 'https://foo'
     scraper = CarDescriptionScraper(expected_url)
 
-    assert scraper.get_url() == f'https://r.jina.ai/{expected_url}'
-    assert DESCRIPTION in scraper.scrap(
-        'foo content'
-    )  # @TODO: when scraper fully implemented. Need to mock here
+    assert scraper.get_url() == expected_url
+
+
+@patch('app.services.scraper.ExtractHTMLBodyHook')
+@patch('app.services.scraper.ExtractTextFromHTMLHook')
+@patch('app.services.scraper.HTMLProcessingHookManager')
+def test_CarDescriptionScraper_output(
+    MockHTMLProcessingHookManager,
+    MockExtractTextHook,
+    MockExtractBodyHook,
+    html_process_hm_factory,
+    html_hook_factory,
+):
+    # Setup mocks
+    MockHTMLProcessingHookManager.return_value = html_process_hm_factory
+    MockExtractTextHook.return_value = html_hook_factory
+    MockExtractBodyHook.return_value = html_hook_factory
+
+    scraper = CarDescriptionScraper('https://foo')
+    output = scraper.scrap('foo content')
+
+    # Assertions
+    assert DESCRIPTION in output
+    assert output == {DESCRIPTION: 'processed'}
+
+
+@patch('app.services.scraper.ExtractHTMLBodyHook')
+@patch('app.services.scraper.ExtractTextFromHTMLHook')
+@patch('app.services.scraper.HTMLProcessingHookManager')
+def test_CarDescriptionScraper_output(
+    MockHTMLProcessingHookManager,
+    MockExtractTextHook,
+    MockExtractBodyHook,
+    html_process_hm_factory,
+    html_hook_factory,
+):
+    # Setup mocks
+    MockHTMLProcessingHookManager.return_value = html_process_hm_factory
+    MockExtractTextHook.return_value = html_hook_factory
+    MockExtractBodyHook.return_value = html_hook_factory
+
+    # Call the function
+    scraper = CarDescriptionScraper('https://foo')
+    output = scraper.scrap('raw html')
+
+    # Assertions
+    assert DESCRIPTION in output
+    assert output == {DESCRIPTION: 'processed'}
+
+    # Ensure hooks and manager were used correctly
+    MockHTMLProcessingHookManager.assert_called_once()
+    html_process_hm_factory.register.assert_any_call(html_hook_factory)
+    html_process_hm_factory.register.assert_any_call(html_hook_factory)
+    html_process_hm_factory.execute.assert_called_once_with('raw html')
 
 
 def test_bad_CarDescriptionScraper():

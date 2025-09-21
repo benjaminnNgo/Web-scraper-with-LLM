@@ -31,15 +31,12 @@ def scraper_builder_mock():
 
 
 def test_scraper(client, scraper_builder_mock):
-    # Arrange
     test_url = 'http://example.com/car'
     expected_result = {'description': 'mocked description'}
     scraper_builder_mock.return_value = expected_result
 
-    # Act
     response = client.get('/scraper', params={'url': test_url})
 
-    # Assert
     scraper_builder_mock.assert_called_once()
     called_scraper = scraper_builder_mock.call_args[0][0]
     assert isinstance(called_scraper, CarDescriptionScraper)

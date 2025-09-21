@@ -1,25 +1,33 @@
-from abc import ABC, abstractmethod
-from typing import Dict, Optional
+from abc import abstractmethod
+from typing import Dict, Optional, Protocol
 
 import requests
 
 from app.constant import DESCRIPTION, ERROR, ERROR_MESSAGE_DETAIL
+from app.services.html_process_hooks import (
+    ExtractHTMLBodyHook,
+    ExtractTextFromHTMLHook,
+    HTMLProcessingHookManager,
+)
 
 
-class ScaperBase(ABC):
+class ScaperBase(Protocol):
     """Base class for web scaper."""
 
     @abstractmethod
     def __init__(self, url: str) -> None:
         """Initialize Scraper."""
+        raise Exception('Need to be implemented for inheritance')
 
     @abstractmethod
     def get_url(self) -> Optional[str]:
         """Return url to webpage."""
+        raise Exception('Need to be implemented for inheritance')
 
     @abstractmethod
     def scrap(self, content: str) -> Optional[Dict]:
         """Scrap the content of the website."""
+        raise Exception('Need to be implemented for inheritance')
 
 
 class CarDescriptionScraper(ScaperBase):
@@ -36,9 +44,14 @@ class CarDescriptionScraper(ScaperBase):
         self.url = url
 
     def get_url(self) -> str:
-        return f'https://r.jina.ai/{self.url}'
+        return self.url
 
     def scrap(self, content: str) -> Dict:
+        html_processing_hm = HTMLProcessingHookManager()
+        html_processing_hm.register(ExtractHTMLBodyHook())
+        html_processing_hm.register(ExtractTextFromHTMLHook())
+
+        content = html_processing_hm.execute(content)
         return {DESCRIPTION: content}
 
 
