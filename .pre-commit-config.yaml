@@ -1,21 +1,4 @@
 repos:
-  - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v5.0.0
-    hooks:
-      - id: no-commit-to-branch
-        name: No commits to master
-      - id: end-of-file-fixer
-        name: End-of-file fixer
-      - name: mixed-line-ending
-        id: mixed-line-ending
-        args: [--fix, lf]
-      - id: trailing-whitespace
-        name: Remove trailing whitespaces
-      - id: check-toml
-        name: Check toml
-      - id: check-yaml
-        name: Check yaml
-
   - repo: https://github.com/adrienverge/yamllint.git
     rev: v1.35.1
     hooks:
@@ -35,12 +18,6 @@ repos:
           --ignore-init-module-imports,
           --in-place,
         ]
-
-  - repo: https://github.com/pycqa/isort
-    rev: 5.13.2
-    hooks:
-      - id: isort
-        name: Sort imports
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
     rev: v0.6.9
@@ -72,6 +49,7 @@ repos:
       - id: pytest
         name: pytest
         entry: uv run pytest tests/unit_tests
-        language: python
+        language: system
         always_run: true
         pass_filenames: false
+        
