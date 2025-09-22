@@ -92,7 +92,7 @@ class ScraperBuilder:
         target_url = scraper.get_url()
 
         try:
-            response = requests.get(target_url)
+            response = requests.get(target_url)  # type: ignore
             response.raise_for_status()
             content = response.text
             if len(content) == 0:

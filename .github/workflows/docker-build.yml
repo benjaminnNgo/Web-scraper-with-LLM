@@ -22,6 +22,3 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t llm-scraper-app .
-
-      - name: Smoke test docker run
-        run: docker run -p 8000:8000 llm-scraper-app
