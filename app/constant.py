@@ -15,7 +15,7 @@ ERROR_MESSAGE_DETAIL: Final[str] = 'error_detail'
 This key would contain detail information about why a query is fail
 """
 
-LLM_MODEL_NAME: Final[str] = os.getenv('LLM_MODEL_NAME', 'llama3.1')
+LLM_MODEL_NAME: Final[str] = os.getenv('LLM_MODEL_NAME', 'gemma3:1b')
 """The name of the model desire to used is defined by setting os env.
 When deploy app with docker, this variable is defined with following flag:
 `-e LLM_MODEL_NAME=<name of the model>`
