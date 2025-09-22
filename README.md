@@ -10,7 +10,40 @@
 
 </div>
 
-# Instruction
+- [Overview](#overview)
+- [Features and Tooling](#key-features-and-tooling)
+- [Installation](#installation)
+
+## Overview
+
+This github repository provides implementation of web scrapper using any pre-train open-source LLM from [Ollama](https://github.com/ollama/ollama).
+
+## Key Features and Tooling
+
+This project is building with help of tools:
+
+- :white_check_mark: [uv](https://docs.astral.sh/uv/)
+- :white_check_mark: [unit test](tests/)
+- :white_check_mark: CI support tool: Github Action
+- :white_check_mark: [Open-source pre-train LLM model from Ollama](https://github.com/ollama/ollama)
+- :white_check_mark: FastAPI
+- :white_check_mark: Docker
+
+Key features:
+
+- :white_check_mark: Use open-source LLM to parse car description from any website
+
+Due to time and resource constraint, the following features are left as future works:
+
+- :white_large_square: Integration test
+- :white_large_square: LLM inference on GPU(s) (since I don't have GPU machine/cluster available to explore this at this point)
+
+Interesting future direction:
+
+- :white_large_square: Parse customer reviews and ratings to learn demand and market trend
+- :white_large_square: Parse promotions and incentives, which can help car dealer to learn marketing and sales strategy of opponent dealer
+
+## Installation
 
 To build and run my app. Docker is all you need! Please follows steps below:
 
