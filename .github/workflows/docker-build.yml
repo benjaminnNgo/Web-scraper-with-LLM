@@ -1,0 +1,27 @@
+name: Docker Image Build
+
+on: # yamllint disable-line rule:truthy
+  push:
+    branches:
+      - master
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  docker-build:
+    env:
+      UV_CACHE_DIR: /tmp/.uv-cache
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Build Docker image
+        run: docker build -t llm-scraper-app .
+
+      - name: Smoke test docker run
+        run: docker run -p 8000:8000 llm-scraper-app
