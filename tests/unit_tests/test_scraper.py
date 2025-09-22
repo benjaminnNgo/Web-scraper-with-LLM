@@ -40,6 +40,13 @@ def html_process_hm_factory():
     return mock_hm
 
 
+@pytest.fixture
+def llm_wrapper_factory():
+    mock_llm_wrapper = MagicMock()
+    mock_llm_wrapper.prompt.return_value = 'foo'
+    return mock_llm_wrapper
+
+
 @patch('app.services.scraper.ExtractHTMLBodyHook')
 @patch('app.services.scraper.ExtractTextFromHTMLHook')
 @patch('app.services.scraper.HTMLProcessingHookManager')
@@ -61,6 +68,7 @@ def test_CarDescriptionScraper_url(
     assert scraper.get_url() == expected_url
 
 
+@patch('app.services.scraper.OllamaWrapper')
 @patch('app.services.scraper.ExtractHTMLBodyHook')
 @patch('app.services.scraper.ExtractTextFromHTMLHook')
 @patch('app.services.scraper.HTMLProcessingHookManager')
@@ -68,36 +76,16 @@ def test_CarDescriptionScraper_output(
     MockHTMLProcessingHookManager,
     MockExtractTextHook,
     MockExtractBodyHook,
+    MockOllamaWrapper,
     html_process_hm_factory,
     html_hook_factory,
+    llm_wrapper_factory,
 ):
     # Setup mocks
     MockHTMLProcessingHookManager.return_value = html_process_hm_factory
     MockExtractTextHook.return_value = html_hook_factory
     MockExtractBodyHook.return_value = html_hook_factory
-
-    scraper = CarDescriptionScraper('https://foo')
-    output = scraper.scrap('foo content')
-
-    # Assertions
-    assert DESCRIPTION in output
-    assert output == {DESCRIPTION: 'processed'}
-
-
-@patch('app.services.scraper.ExtractHTMLBodyHook')
-@patch('app.services.scraper.ExtractTextFromHTMLHook')
-@patch('app.services.scraper.HTMLProcessingHookManager')
-def test_CarDescriptionScraper_output(
-    MockHTMLProcessingHookManager,
-    MockExtractTextHook,
-    MockExtractBodyHook,
-    html_process_hm_factory,
-    html_hook_factory,
-):
-    # Setup mocks
-    MockHTMLProcessingHookManager.return_value = html_process_hm_factory
-    MockExtractTextHook.return_value = html_hook_factory
-    MockExtractBodyHook.return_value = html_hook_factory
+    MockOllamaWrapper.return_value = llm_wrapper_factory
 
     # Call the function
     scraper = CarDescriptionScraper('https://foo')
@@ -105,13 +93,18 @@ def test_CarDescriptionScraper_output(
 
     # Assertions
     assert DESCRIPTION in output
-    assert output == {DESCRIPTION: 'processed'}
+    assert output == {DESCRIPTION: 'foo'}
 
     # Ensure hooks and manager were used correctly
     MockHTMLProcessingHookManager.assert_called_once()
-    html_process_hm_factory.register.assert_any_call(html_hook_factory)
+    MockExtractTextHook.assert_called_once()
+    MockExtractBodyHook.assert_called_once()
     html_process_hm_factory.register.assert_any_call(html_hook_factory)
     html_process_hm_factory.execute.assert_called_once_with('raw html')
+    MockOllamaWrapper.assert_called_once()
+    llm_wrapper_factory.prompt.assert_called_once_with(
+        'processed', scraper._get_template(), parse_description=scraper._get_task()
+    )
 
 
 def test_bad_CarDescriptionScraper():

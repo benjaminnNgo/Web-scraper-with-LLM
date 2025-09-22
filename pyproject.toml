@@ -7,9 +7,13 @@ requires-python = ">=3.11"
 dependencies = [
     "bs4>=0.0.2",
     "fastapi[standard]>=0.116.2",
+    "langchain-core>=0.3.76",
+    "langchain-ollama>=0.3.8",
+    "mypy>=1.18.2",
     "pre-commit>=4.3.0",
     "ruff>=0.13.1",
     "transformers>=4.56.2",
+    "types-requests>=2.32.4.20250913",
     "uvicorn>=0.36.0",
 ]
 
