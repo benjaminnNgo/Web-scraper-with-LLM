@@ -76,7 +76,7 @@ docker build -t llm-scraper-app .
 2. Then run docker
 
 ```
-docker run -p 8000:8000 -e LLM_MODEL_NAME=gemma3:1b -e OLLAMA_HOST=11434 llm-scraper-app
+docker run -p 8000:8000 -e LLM_MODEL_NAME=gemma3:1b -e OLLAMA_HOST=11434 --network llm_scraper_host llm-scraper-app
 ```
 
 The app will be available at `http://127.0.0.1:8000/`. To parse car description, you need use the endpoint at `/scraper` as follows:
