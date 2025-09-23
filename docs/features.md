@@ -40,4 +40,4 @@ This is an interesting case where there are any car related information from the
 
 However, if we use the same prompt template to ask `GPT-5` to perform the same task. The output will be empty string. May be `GPT-5` does a better job in preventing hallucinations compared to `gemma3:1b` (very tiny model that runs in reasonable time on CPU).
 
-But still, can we prevent hallucinations of `gemma3:1b`? May be chain-of-thought helpful? Ask the model if the page contain any releated information about cars first? Then ask it to parse after that? This is actually very interesting to try and I am currently working on this improvement.
+But still, can we prevent hallucinations of `gemma3:1b`? May be chain-of-thought helpful? Ask the model if the page contain any releated information about cars first? Then ask it to parse after that? This is actually very interesting to try and I am currently working on this improvement. Chain-of-thought reasoning does help to prevent hallucinations, see [this branch.](https://github.com/benjaminnNgo/LLM-challenge/blob/chain-of-thought/docs/features.md#parse-car-description-from-vdp-url)
