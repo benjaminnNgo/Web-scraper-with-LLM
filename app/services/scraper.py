@@ -58,17 +58,21 @@ class CarDescriptionScraper(ScaperBase):
 
     def _get_template(self) -> str:
         template = (
-            'You are tasked with extracting specific information from the following text content: {content}. '
-            'Please follow these instructions carefully: \n\n'
-            '1. **Extract Information:** Only extract the information that directly matches the provided description:{parse_description}'
-            '2. **No Extra Content:** Do not include any additional text, comments, or explanations in your response. '
-            "3. **Empty Response:** If no information matches the description, return an empty string ('')."
-            '4. **Direct Data Only:** Your output should contain only the data that is explicitly requested, with no other text.'
+            'You are an expert in the car industry. Your task is as follows:'
+            'Given the following web page content:{content}'
+            '\n\nPlease follow these instructions carefully:'
+            '1. Carefully review the text and identify any {parse_description} (such as exterior style, technology, comfort, performance, safety, etc.)'
+            "2.If you find any car features, extract a concise, high-quality description of the car, starting your response with:'A beautiful car with ...'(and then continue with the extracted features)"
+            "3.If you do not find any car features, respond with an empty string ('')."
+            '4.Do not include any additional text, comments, or explanations in your response.'
+            '5.Only extract the information that are directly about {parse_description}.'
+            '6.Output must be a plain string, with no markdown, no code fences, no language labels.'
         )
+
         return template
 
     def _get_task(self) -> str:
-        return 'Parse description of the car. Then write a paragraph of parsed description.'
+        return 'car features'
 
     def scrap(self, content: str) -> Dict:
         """Scap information about the car."""
