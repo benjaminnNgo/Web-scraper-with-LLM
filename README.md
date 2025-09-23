@@ -31,7 +31,7 @@ This project is building with help of tools:
 
 Key features:
 
-- :white_check_mark: [Use open-source LLM to parse car description from any website](#parse_car_description)
+- :white_check_mark: Use open-source LLM to parse car description from any website.(for further information please visit document [here](docs/features.md#parse-car-description-from-vdp-url))
 
 Due to time and resource constraint, the following features are left as future works:
 
@@ -80,3 +80,5 @@ docker run -p 8000:8000 -e LLM_MODEL_NAME=gemma3:1b -e OLLAMA_HOST=11434 --netwo
 ```
 
 The app will be available at `http://127.0.0.1:8000/`.
+
+To learn about available features and how to use them, please see [Features.md](docs/features.md)
