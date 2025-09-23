@@ -61,11 +61,13 @@ class CarDescriptionScraper(ScaperBase):
             'You are an expert in the car industry. Your task is as follows:'
             'Given the following web page content:{content}'
             '\n\nPlease follow these instructions carefully:'
-            '1. Carefully review the text and identify any {parse_description} (such as exterior style, technology, comfort, performance, safety, etc.)'
-            "2.If you find any car features, extract a concise, high-quality description of the car, starting your response with:'A beautiful car with ...'(and then continue with the extracted features)"
-            "3.If you do not find any car features, respond with an empty string ('')."
+            '1. Thoroughly analyze the content and verify if it contains any mention of {parse_description}.'
+            '2.If no relevant information about {parse_description} is present, respond only with an empty string ('
+            ').'
+            "3.If you find any {parse_description}, extract a concise, high-quality description of the car, starting your response with:'A beautiful car with ...'(and then continue with the extracted features)"
             '4.Do not include any additional text, comments, or explanations in your response.'
-            '5.Only extract the information that are directly about {parse_description}.'
+            '5.Do not add any information not explicitly found in the text. Avoid making up, guessing, or inferring beyond the content.'
+            '7.If uncertain, prefer to return an empty string rather than hallucinate details.'
             '6.Output must be a plain string, with no markdown, no code fences, no language labels.'
         )
 

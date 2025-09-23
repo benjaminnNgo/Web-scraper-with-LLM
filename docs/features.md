@@ -30,14 +30,22 @@ A `JSON` object containing description will be return. For example:
 
 **Input:**
 
-> https://umanitoba.ca/
+> https://tgb.complexdatalab.com/
 
 **Output**
 
 ![image](img/case2.png)
 
-This is an interesting case where there are any car related information from the webpage. However, the `gemma3:1b` makes up responses (hallucinations issue).
+Chain of thought does help to prevent hallucinations issue.
 
-However, if we use the same prompt template to ask `GPT-5` to perform the same task. The output will be empty string. May be `GPT-5` does a better job in preventing hallucinations compared to `gemma3:1b` (very tiny model that runs in reasonable time on CPU).
+3. Case 3
 
-But still, can we prevent hallucinations of `gemma3:1b`? May be chain-of-thought helpful? Ask the model if the page contain any releated information about cars first? Then ask it to parse after that? This is actually very interesting to try and I am currently working on this improvement.
+**Input:**
+
+> https://umanitoba.ca/
+
+**Output**
+
+![image](img/case3.png)
+
+However, the improvement from chain of thought is not consistent. May be this limitation in the expressive of tiny model `gemma3:1b`?
