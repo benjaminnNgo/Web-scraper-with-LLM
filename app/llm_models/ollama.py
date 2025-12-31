@@ -1,6 +1,7 @@
 from .base import BasedLLMWrapper
 from langchain_ollama import OllamaLLM
 from langchain_core.prompts import ChatPromptTemplate
+from typing import List
 
 
 class OllamaWrapper(BasedLLMWrapper):
@@ -46,3 +47,7 @@ class OllamaWrapper(BasedLLMWrapper):
             parsed_results.append(response)
 
         return '\n'.join(parsed_results)
+
+    @classmethod
+    def get_supporting_models(cls) -> List[str]:
+        return ['gemma3:1b']  # @TODO: Current ollama doens't expose API to fetch this.

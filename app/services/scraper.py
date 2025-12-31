@@ -6,15 +6,13 @@ from app.constant import (
     DESCRIPTION,
     ERROR,
     ERROR_MESSAGE_DETAIL,
-    LLM_MODEL_NAME,
-    OLLAMA_HOST,
 )
 from app.services.html_process_hooks import (
     ExtractHTMLBodyHook,
     ExtractTextFromHTMLHook,
     HTMLProcessingHookManager,
 )
-from app.llm_models import OllamaWrapper
+from app.llm_models import BasedLLMWrapper
 
 
 class ScaperBase(Protocol):
@@ -44,14 +42,12 @@ class CarDescriptionScraper(ScaperBase):
 
     """
 
-    def __init__(self, url: str) -> None:
-        if url is None:
+    def __init__(self, url: str, model: BasedLLMWrapper) -> None:
+        if url is None or model is None:
             raise ValueError("URL provided can't be None")
 
         self.url = url
-        self.llm_model = OllamaWrapper(
-            model=LLM_MODEL_NAME, base_url=f'http://ollama:{OLLAMA_HOST}'
-        )
+        self.llm_model = model
 
     def get_url(self) -> str:
         return self.url
