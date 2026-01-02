@@ -41,6 +41,8 @@ jobs:
         run: uv sync --all-extras --dev --frozen
 
       - name: Test non-gpu tests with pytest
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: uv run pytest tests/unit_tests
 
       - name: Minimize uv cache
