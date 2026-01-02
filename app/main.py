@@ -47,7 +47,6 @@ application.include_router(scraper_router, prefix='/scraper', tags=['scraper'])
 
 @application.get('/')
 def main():
-    # lifespan()
     return Response(content='Hello from llm-challenge!', media_type='text/plain')
 
 

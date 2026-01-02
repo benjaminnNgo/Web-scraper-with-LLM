@@ -30,12 +30,27 @@ def scraper_builder_mock():
         yield mock_build
 
 
-def test_scraper(client, scraper_builder_mock):
+def test_scraper_gemini(client, scraper_builder_mock):
     test_url = 'http://example.com/car'
     expected_result = {'description': 'mocked description'}
     scraper_builder_mock.return_value = expected_result
 
-    response = client.get('/scraper', params={'url': test_url})
+    response = client.get('/scraper/gemini', params={'url': test_url})
+
+    scraper_builder_mock.assert_called_once()
+    called_scraper = scraper_builder_mock.call_args[0][0]
+    assert isinstance(called_scraper, CarDescriptionScraper)
+    assert called_scraper.url == test_url
+    assert response.status_code == 200
+    assert response.json() == expected_result
+
+
+def test_scraper_ollama(client, scraper_builder_mock):
+    test_url = 'http://example.com/car'
+    expected_result = {'description': 'mocked description'}
+    scraper_builder_mock.return_value = expected_result
+
+    response = client.get('/scraper/ollama', params={'url': test_url})
 
     scraper_builder_mock.assert_called_once()
     called_scraper = scraper_builder_mock.call_args[0][0]
