@@ -4,7 +4,12 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from app.constant import DESCRIPTION, ERROR, ERROR_MESSAGE_DETAIL
-from app.services.scraper import CarDescriptionScraper, ScaperBase, ScraperBuilder,BasedLLMWrapper
+from app.services.scraper import (
+    CarDescriptionScraper,
+    ScaperBase,
+    ScraperBuilder,
+    BasedLLMWrapper,
+)
 
 
 class DummyScraper(ScaperBase):
@@ -25,19 +30,22 @@ class DummyScraper(ScaperBase):
 
     def scrap(self, content: str) -> Dict:
         return {DESCRIPTION: content}
-        
+
+
 class MockLLMWrapper(BasedLLMWrapper):
-    last_content : str = ''
-    last_template : str = ''
-    prompt_call_count : int = 0
+    last_content: str = ''
+    last_template: str = ''
+    prompt_call_count: int = 0
+
     def prompt(self, content: str, template: str, **kwargs) -> str:
         self.last_content = content
         self.last_template = template
         self.prompt_call_count += 1
-        return "foo"
-    
+        return 'foo'
+
     def get_supporting_models(cls) -> List[str]:
         return ['foo-model']
+
 
 @pytest.fixture
 def html_hook_factory():
@@ -76,7 +84,7 @@ def test_CarDescriptionScraper_url(
 
     expected_url = 'https://foo'
     mockLLMWrapper = MockLLMWrapper()
-    scraper = CarDescriptionScraper(expected_url,mockLLMWrapper)
+    scraper = CarDescriptionScraper(expected_url, mockLLMWrapper)
 
     assert scraper.get_url() == expected_url
 
@@ -99,7 +107,7 @@ def test_CarDescriptionScraper_output(
 
     # Call the function
     mockLLMWrapper = MockLLMWrapper()
-    scraper = CarDescriptionScraper('https://foo',mockLLMWrapper)
+    scraper = CarDescriptionScraper('https://foo', mockLLMWrapper)
     output = scraper.scrap('raw html')
 
     # Assertions
@@ -120,11 +128,10 @@ def test_CarDescriptionScraper_output(
 def test_bad_CarDescriptionScraper():
     mockLLMWrapper = MockLLMWrapper()
     with pytest.raises(ValueError):
-        CarDescriptionScraper(None,mockLLMWrapper)
+        CarDescriptionScraper(None, mockLLMWrapper)
 
     with pytest.raises(ValueError):
-        CarDescriptionScraper("foo",None)
-    
+        CarDescriptionScraper('foo', None)
 
 
 def test_ScraperBuilder():

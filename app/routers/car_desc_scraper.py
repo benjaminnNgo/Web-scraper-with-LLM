@@ -13,7 +13,7 @@ scraper_router = APIRouter()
 
 
 @scraper_router.get('/ollama')
-def scraper(url: str):
+def scraper_ollama(url: str):
     model = OllamaWrapper(
         model=OLLAMA_MODEL_NAME, base_url=f'http://ollama:{OLLAMA_HOST}'
     )
@@ -23,7 +23,7 @@ def scraper(url: str):
 
 
 @scraper_router.get('/gemini')
-def scraper(url: str):
+def scraper_gemini(url: str):
     model = GeminiWrapper(GEMINI_MODEL_NAME)
     scraper = CarDescriptionScraper(url, model)
     result = ScraperBuilder.build(scraper)
