@@ -14,16 +14,16 @@ class GeminiWrapper(BasedLLMWrapper):
         model (str): name of support Gemini model
     """
 
-    def __init__(self, model='gemini-2.5-pro'):
+    def __init__(self, model='gemini-2.5-pro', temp=0.2):
         super().__init__()
 
         try:
             self.model = ChatGoogleGenerativeAI(
-                model=model, convert_system_message_to_human=True, temperature=0.2
+                model=model, convert_system_message_to_human=True, temperature=temp
             )
         except Exception:
-            raise Exception(  # Check for each type of error and raise here
-                'Fail to load model'
+            raise BrokenPipeError(
+                'Fail to load Gemini model. Please Investigate.'  # @TODO: handle the error and throw proper error for user and logging to the system
             )
 
     def prompt(self, content: str, template: str, **kwargs) -> str:
@@ -47,3 +47,16 @@ class GeminiWrapper(BasedLLMWrapper):
             'gemini-2.5-flash-lite',
             'gemini-2.0-flash',
         ]
+
+    @classmethod
+    def system_init_check(cls, model, temp=0.2) -> None:
+        # First check if the model name is valid
+        if not model in GeminiWrapper.get_supporting_models():
+            raise ValueError(f'Gemini model: {model} is not supported.')
+
+        try:
+            ChatGoogleGenerativeAI(
+                model=model, convert_system_message_to_human=True, temperature=temp
+            )
+        except Exception as e:
+            raise BrokenPipeError(f'Fail to load Gemini model. Please Investigate. {e}')

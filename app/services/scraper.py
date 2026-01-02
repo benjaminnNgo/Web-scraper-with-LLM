@@ -43,8 +43,11 @@ class CarDescriptionScraper(ScaperBase):
     """
 
     def __init__(self, url: str, model: BasedLLMWrapper) -> None:
-        if url is None or model is None:
+        if url is None:
             raise ValueError("URL provided can't be None")
+
+        if model is None:
+            raise ValueError("Model provided can't be None")
 
         self.url = url
         self.llm_model = model

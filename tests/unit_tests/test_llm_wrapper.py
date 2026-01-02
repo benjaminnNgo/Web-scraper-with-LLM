@@ -2,6 +2,7 @@ from unittest.mock import MagicMock, patch
 
 from app.llm_models import BasedLLMWrapper, OllamaWrapper, GeminiWrapper
 from langchain_core.messages import HumanMessage, SystemMessage
+import pytest
 
 
 def test_break_up_content():
@@ -10,18 +11,6 @@ def test_break_up_content():
     assert len(batches) == 3
     assert batches[0] == 'f'
     assert batches[1] == batches[2] == 'o'
-
-
-@patch('app.llm_models.ollama.OllamaLLM')
-def test_ollama(mock_ollama_cls):
-    mock_model_instance = MagicMock(return_value='mocked response')
-    mock_ollama_cls.return_value = mock_model_instance
-
-    model = OllamaWrapper()
-    assert model.get_supporting_models() == ['gemma3:1b']
-
-    response = model.prompt(content='foo content', template='foo template : {content}')
-    assert response == 'mocked response'
 
 
 @patch('app.llm_models.ollama.OllamaLLM')
@@ -43,14 +32,14 @@ def test_ollama(mock_ollama_cls):
 
 
 @patch('app.llm_models.gemini.ChatGoogleGenerativeAI')
-def test_gemini(mock_ollama_cls):
+def test_gemini(mock_gemini_cls):
     expect_response = 'mock response'
     response_mock = MagicMock()
     response_mock.content = expect_response
     invoke_mock = MagicMock(return_value=response_mock)
     mock_model_instance = MagicMock()
     mock_model_instance.invoke = invoke_mock
-    mock_ollama_cls.return_value = mock_model_instance
+    mock_gemini_cls.return_value = mock_model_instance
 
     model = GeminiWrapper()
     assert GeminiWrapper.get_supporting_models() == [  # Free of charge model
@@ -73,3 +62,29 @@ def test_gemini(mock_ollama_cls):
         invoke_mock.assert_any_call(
             [SystemMessage(content='foo template'), HumanMessage(content='content')]
         )
+
+
+@patch('app.llm_models.gemini.ChatGoogleGenerativeAI')
+def test_gemini_system_init_check(mock_gemini_cls, monkeypatch):
+    mock_gemini_cls.side_effect = Exception('init failed')
+
+    with pytest.raises(ValueError):
+        GeminiWrapper.system_init_check('foo')
+
+    monkeypatch.delenv('GEMINI_API_KEY', raising=False)
+    with pytest.raises(BrokenPipeError):
+        GeminiWrapper.system_init_check('gemini-2.5-pro')
+
+
+@patch('app.llm_models.ollama.OllamaLLM')
+def test_gemini_system_init_check(mock_ollama_cls, monkeypatch):
+    mock_ollama_cls.side_effect = Exception('init failed')
+
+    with pytest.raises(ValueError):
+        OllamaWrapper.system_init_check('foo')
+
+    with pytest.raises(BrokenPipeError):
+        OllamaWrapper.system_init_check('gemma3:1b')
+
+    with pytest.raises(BrokenPipeError):
+        OllamaWrapper.system_init_check('gemma3:1b', 'foo_url')

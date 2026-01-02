@@ -9,6 +9,12 @@ from app.constant import (
 )
 
 
+def car_desc_scaper_sys_init_check() -> None:
+    r"""Perform prerequisite system check."""
+    OllamaWrapper.system_init_check(OLLAMA_MODEL_NAME, OLLAMA_HOST)
+    GeminiWrapper.system_init_check(GEMINI_MODEL_NAME)
+
+
 scraper_router = APIRouter()
 
 

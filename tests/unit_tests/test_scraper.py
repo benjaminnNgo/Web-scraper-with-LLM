@@ -10,6 +10,7 @@ from app.services.scraper import (
     ScraperBuilder,
     BasedLLMWrapper,
 )
+from app.routers.car_desc_scraper import car_desc_scaper_sys_init_check
 
 
 class DummyScraper(ScaperBase):
@@ -146,3 +147,12 @@ def test_bad_ScraperBuilder():
     scraper = DummyScraper('https://httpbin.org/status/404')  # always failed request
     result = ScraperBuilder.build(scraper)
     assert ERROR in result and ERROR_MESSAGE_DETAIL in result
+
+
+@patch('app.routers.car_desc_scraper.OllamaWrapper')
+@patch('app.routers.car_desc_scraper.GeminiWrapper')
+def test_sys_init_check(gemini_wrapper, ollama_wrapper):
+    car_desc_scaper_sys_init_check()
+
+    gemini_wrapper.system_init_check.assert_called_once()
+    ollama_wrapper.system_init_check.assert_called_once()

@@ -1,27 +1,12 @@
 from fastapi import FastAPI, Response
 
 from .routers import scraper_router
-from app.llm_models import GeminiWrapper, OllamaWrapper
-from app.constant import (
-    OLLAMA_MODEL_NAME,
-    GEMINI_MODEL_NAME,
-)
-
-
-def _pre_ollama_check() -> None:
-    if not OLLAMA_MODEL_NAME in OllamaWrapper.get_supporting_models():
-        raise ValueError(f'Ollama model: {OLLAMA_MODEL_NAME} is not supported.')
-
-
-def _pre_gemini_check() -> None:
-    if not GEMINI_MODEL_NAME in GeminiWrapper.get_supporting_models():
-        raise ValueError(f'Ollama model: {OLLAMA_MODEL_NAME} is not supported.')
+from app.routers.car_desc_scraper import car_desc_scaper_sys_init_check
 
 
 def _startup() -> None:
     r"""Perform system check and fail building if prerequisites doesn't meet."""
-    _pre_ollama_check()
-    _pre_gemini_check()
+    car_desc_scaper_sys_init_check()
 
 
 def _shutdown() -> None:

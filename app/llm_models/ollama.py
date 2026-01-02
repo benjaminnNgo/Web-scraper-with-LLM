@@ -33,8 +33,6 @@ class OllamaWrapper(BasedLLMWrapper):
         """Prompt to LLM given input and template."""
         template += '{content}'
 
-        print(template)
-        print(content)
         prompt = ChatPromptTemplate.from_template(template)
         chain = prompt | self.model
 
@@ -55,3 +53,17 @@ class OllamaWrapper(BasedLLMWrapper):
     @classmethod
     def get_supporting_models(cls) -> List[str]:
         return ['gemma3:1b']  # @TODO: Current ollama doens't expose API to fetch this.
+
+    @classmethod
+    def system_init_check(cls, model_name, base_url=None):
+        # First check if the model name is valid
+        if not model_name in OllamaWrapper.get_supporting_models():
+            raise ValueError(f'Ollama model: {model_name} is not supported.')
+
+        try:
+            if base_url:
+                OllamaLLM(model=model_name, base_url=base_url)
+            else:
+                OllamaLLM(model=model_name)
+        except Exception as e:
+            raise BrokenPipeError(f'Fail to load Ollama model. Please Investigate. {e}')
