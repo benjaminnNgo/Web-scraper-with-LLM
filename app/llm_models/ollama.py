@@ -31,6 +31,10 @@ class OllamaWrapper(BasedLLMWrapper):
 
     def prompt(self, content: str, template: str, **kwargs) -> str:
         """Prompt to LLM given input and template."""
+        template += '{content}'
+
+        print(template)
+        print(content)
         prompt = ChatPromptTemplate.from_template(template)
         chain = prompt | self.model
 
