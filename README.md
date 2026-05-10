@@ -2,7 +2,7 @@
 
 <div align="center">
 
-[![Unit Tests](https://github.com/benjaminnNgo/LLM-challenge/actions/workflows/testing.yml/badge.svg?branch=main)](https://github.com/benjaminnNgo/LLM-challenge/actions/workflows/testing.yml)
+[![Unit Tests](https://github.com/benjaminnNgo/LLM-challenge/actions/workflows/testing.yml/badge.svg?branch=main&event=push)](https://github.com/benjaminnNgo/LLM-challenge/actions/workflows/testing.yml)
 [![Linting](https://github.com/benjaminnNgo/LLM-challenge/actions/workflows/ruff.yml/badge.svg?branch=main)](https://github.com/benjaminnNgo/LLM-challenge/actions/workflows/ruff.yml)
 
 [![Docker Build](https://github.com/benjaminnNgo/LLM-challenge/actions/workflows/docker-build.yml/badge.svg?branch=main)](https://github.com/benjaminnNgo/LLM-challenge/actions/workflows/docker-build.yml)
